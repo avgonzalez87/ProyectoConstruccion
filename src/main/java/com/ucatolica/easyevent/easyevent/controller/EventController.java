@@ -56,6 +56,10 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+    @PutMapping("/update/{eventoId}")
+    public ResponseEntity<String> actualizarEvento(@PathVariable int eventoId, @RequestBody Evento eventoActualizado) {
+        return eventService.updateEvento(eventoId, eventoActualizado);
+    }
 
     @DeleteMapping("/eventos/delete")
     public void deleteEvento(@RequestBody Evento evento){

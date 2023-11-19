@@ -1,5 +1,8 @@
 package com.ucatolica.easyevent.easyevent.model;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "eventos")
@@ -49,7 +52,11 @@ public class Evento {
     @Column(name = "estado", length = Integer.MAX_VALUE)
     private String estado;
 
-    public Evento(Integer id, Integer idproveedor, String nombreEvento, String descripcion, String tipoEvento, Integer edadRecomendada, Double precio, String actividades, String ubicacion, String georeferencia, String categoria, Integer capacidad, String comida, String estado) {
+
+    @Column(name = "fechaEvento",length = Integer.MAX_VALUE))
+    private  String  fechaEvento;
+
+    public Evento(Integer id, Integer idproveedor, String nombreEvento, String descripcion, String tipoEvento, Integer edadRecomendada, String fechaEvento, Double precio, String actividades, String ubicacion, String georeferencia, String categoria, Integer capacidad, String comida, String estado) {
         this.id = id;
         this.idproveedor = idproveedor;
         this.nombreEvento = nombreEvento;
@@ -64,6 +71,8 @@ public class Evento {
         this.capacidad = capacidad;
         this.comida = comida;
         this.estado = estado;
+        this.fechaEvento= fechaEvento;
+
     }
 
     public Evento() {
@@ -179,5 +188,13 @@ public class Evento {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public  String getFechaEvento() {
+        return fechaEvento;
+    }
+
+    public void setFechaEvento(Integer fechaEvento) {
+        this.fechaEvento = fechaEvento;
     }
 }
