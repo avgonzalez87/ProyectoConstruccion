@@ -15,5 +15,12 @@ public class ProveedorService {
 
     private ProveedorRepository proveedorRepository;
 
-    public Optional<Proveedor> getProveedorById(Integer id) {return proveedorRepository.findById(id);}
+    public Optional<Proveedor> getProveedorById(Integer id) {
+    try{
+        return proveedorRepository.findById(id);
+
+    }catch(Exception e){
+        throw new RuntimeException("Proveedor no encontrado: ");
+    }
+    }
 }

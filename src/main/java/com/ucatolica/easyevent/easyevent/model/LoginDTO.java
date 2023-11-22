@@ -1,14 +1,9 @@
 package com.ucatolica.easyevent.easyevent.model;
 
-
-import javax.validation.constraints.NotNull;
-
 public class LoginDTO {
 
-    @NotNull(message = "El correo no puede ser nulo.")
     private String correo;
 
-    @NotNull(message = "La contrasena no puede ser nulo.")
     private String contrasena;
 
     public LoginDTO() {

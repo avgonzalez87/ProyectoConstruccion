@@ -6,17 +6,22 @@ import com.ucatolica.easyevent.easyevent.model.Proveedor;
 import com.ucatolica.easyevent.easyevent.services.EmailService;
 import com.ucatolica.easyevent.easyevent.services.EventService;
 import com.ucatolica.easyevent.easyevent.services.ProveedorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.ucatolica.easyevent.easyevent.repository.ProveedorRepository;
-//import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Optional;
-
+@Tag(name = "EventController", description = "Gestiona las operaciones relacionadas con eventos")
 @RestController
+
 @RequestMapping("/api/evento")
 public class EventController {
     @Autowired
@@ -25,22 +30,44 @@ public class EventController {
     private EmailService emailService;
     @Autowired
     private ProveedorService proveedorService;
-    @Autowired
-    private ProveedorRepository proveedorRepository;
+
+    @Operation(summary = "Obtener todos los eventos", description = "Devuelve una lista de todos los eventos")
 
     @GetMapping("/eventos")
-    public List<Evento> getAll(){
-
-        return eventService.getAllEvents();
+    public ResponseEntity<List<Evento>> getAll(){
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.getAllEvents());
     }
 
-    @GetMapping("/eventos/{id}")
-    public Optional<Evento> getEvento(@PathVariable int id){
-        return eventService.getEventoById(id);
+    @Operation(summary = "Obtener un evento por ID", description = "Devuelve un evento basado en su ID")
+    @ApiResponse(responseCode = "400", description = "Error interno")
+    @ApiResponse(responseCode = "403", description = "Acceso prohibido")
+    @GetMapping("/eventos/list/{id}")
+    public ResponseEntity<Evento> getEvento(
+            @Parameter(description = "id evento", required = true)
+            @PathVariable int id
+    ){
+        Evento evento = eventService.getEventoById(id);
+        if(evento!=null){
+            return ResponseEntity.status(HttpStatus.CREATED).body(evento);
+        }else{
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
+
+
+    @Operation(summary = "Crear un nuevo evento", description = "Crea y guarda un nuevo evento")
+    @ApiResponse(responseCode = "201", description = "Evento creado exitosamente")
+    @ApiResponse(responseCode = "400", description = "Error interno")
+    @ApiResponse(responseCode = "403", description = "Acceso prohibido")
     @PostMapping("/eventos/save")
-    public ResponseEntity<String> crearEvento( @RequestBody Evento evento) {
+    public ResponseEntity<String> crearEvento(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Evento a ser creado",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = Evento.class))
+            )
+            @RequestBody Evento evento) {
         try {
             ResponseEntity<Evento> eventoGuardado = eventService.saveEvento(evento);
             Optional<Proveedor> optionalProveedor= proveedorService.getProveedorById(evento.getIdproveedor());
@@ -56,13 +83,33 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+    @Operation(summary = "Actualizar un evento por ID", description = "Actualiza un evento existente")
+    @ApiResponse(responseCode = "200", description = "Evento actualizado exitosamente")
+    @ApiResponse(responseCode = "400", description = "Error interno")
+    @ApiResponse(responseCode = "403", description = "Acceso prohibido")
     @PutMapping("/update/{eventoId}")
-    public ResponseEntity<String> actualizarEvento(@PathVariable int eventoId, @RequestBody Evento eventoActualizado) {
+    public ResponseEntity<String> actualizarEvento(
+            @Parameter(description = "ID del evento a ser actualizado", required = true)
+            @PathVariable int eventoId,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Evento actualizado",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = Evento.class))
+            )
+            @RequestBody Evento eventoActualizado) {
+
         return eventService.updateEvento(eventoId, eventoActualizado);
     }
 
-    @DeleteMapping("/eventos/delete")
-    public void deleteEvento(@RequestBody Evento evento){
+    @Operation(summary = "Eliminar un evento", description = "Elimina un evento existente")
+    @ApiResponse(responseCode = "200", description = "Evento eliminado exitosamente")
+    @ApiResponse(responseCode = "400", description = "Error interno")
+    @ApiResponse(responseCode = "403", description = "Acceso prohibido")
+    @DeleteMapping("/eventos/delete/{eventoId}")
+    public void deleteEvento(
+            @Parameter(description = "id evento", required = true)
+            @PathVariable Integer evento
+        ) {
         eventService.deleteEvento(evento);
     }
 }

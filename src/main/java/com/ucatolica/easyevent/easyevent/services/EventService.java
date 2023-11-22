@@ -26,34 +26,47 @@ public class EventService {
         return eventoRepository.getAll();
     }
 
-    public Optional<Evento> getEventoById(int id) {
-        return eventoRepository.getEvento(id);
+    public Evento getEventoById(int id) {
+
+         Optional<Evento> evento = eventoRepository.getEvento(id);
+         if (evento.isPresent()){
+             return evento.get();
+         }else{
+             return null;
+         }
     }
 
     public ResponseEntity<Evento> saveEvento(Evento evento) {
         if (evento.getNombreEvento() == null || evento.getNombreEvento().isEmpty() ||
                 evento.getDescripcion() == null || evento.getDescripcion().isEmpty() ||
                 evento.getUbicacion() == null || evento.getUbicacion().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            throw new RuntimeException("Error, campos vacios ");
         }
 
+        try{
+            if (evento.getPrecio() < 0) {
+                evento.setPrecio(0.00);
+            }
 
-
-        if (evento.getPrecio() < 0) {
-            evento.setPrecio(0.00);
+            if (evento.getCapacidad() < 0) {
+                evento.setCapacidad(0);
+            }
+            Evento savedEvento = eventoRepository.save(evento);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedEvento);
+        }catch(Exception exception){
+            throw new RuntimeException("Error :" + exception.getMessage());
         }
-
-        if (evento.getCapacidad() < 0) {
-            evento.setCapacidad(0);
-        }
-
-        Evento savedEvento = eventoRepository.save(evento);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedEvento);
 
     }
 
-    public void deleteEvento(Evento evento){
-        eventoRepository.delete(evento);
+    public ResponseEntity<String> deleteEvento(int eventoId){
+        Optional<Evento> evento = eventoRepository.getEvento(eventoId);
+        if(evento.isPresent()){
+            eventoRepository.delete(evento.get());
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El evento no existe");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Evento eliminado");
     }
     public ResponseEntity<String> updateEvento(int eventoId, Evento eventoActualizado) {
         Optional<Evento> optionalEvento = eventoRepository.getEvento(eventoId);
@@ -71,9 +84,6 @@ public class EventService {
             eventoExistente.setDescripcion(eventoActualizado.getDescripcion());
             eventoExistente.setUbicacion(eventoActualizado.getUbicacion());
             eventoExistente.setCategoria(eventoActualizado.getCategoria());
-
-            LocalDateTime fechaActual = LocalDateTime.now();
-            LocalDateTime fechaMaximaPermitida = fechaActual.plusMonths(3);
 
             LocalDateTime fechaActual = LocalDateTime.now();
             LocalDateTime fechaMaximaPermitida = fechaActual.plusMonths(3);
@@ -103,7 +113,7 @@ public class EventService {
             }
 
             // Guardar el evento actualizado
-             eventoRepository.save(eventoExistente);
+            eventoRepository.save(eventoExistente);
             return ResponseEntity.status(HttpStatus.OK).body("Evento actualizado");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento no encontrado");

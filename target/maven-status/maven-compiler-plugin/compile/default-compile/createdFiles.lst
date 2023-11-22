@@ -1,11 +1,10 @@
 com\ucatolica\easyevent\easyevent\services\EventService.class
-com\ucatolica\easyevent\easyevent\model\EventoDTO.class
 com\ucatolica\easyevent\easyevent\repository\ProveedorRepository.class
+com\ucatolica\easyevent\easyevent\model\LoginDTO.class
 com\ucatolica\easyevent\easyevent\services\ProveedorService.class
 com\ucatolica\easyevent\easyevent\model\Menu.class
 com\ucatolica\easyevent\easyevent\EasyeventApplication.class
 com\ucatolica\easyevent\easyevent\model\Proveedor.class
-com\ucatolica\easyevent\easyevent\model\Cliente.class
 com\ucatolica\easyevent\easyevent\repository\UsuarioRepository.class
 com\ucatolica\easyevent\easyevent\controller\UsuarioController.class
 com\ucatolica\easyevent\easyevent\services\UsuarioService.class
