@@ -2,7 +2,12 @@ package com.ucatolica.easyevent.easyevent.model;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
+import java.util.Locale;
 
 @Entity
 @Table(name = "eventos")
@@ -53,8 +58,8 @@ public class Evento {
     private String estado;
 
 
-    @Column(name = "fechaEvento",length = Integer.MAX_VALUE))
-    private  String  fechaEvento;
+    @Column(name = "fechaEvento", length = Integer.MAX_VALUE)
+    private Date fechaEvento;
 
     public Evento(Integer id, Integer idproveedor, String nombreEvento, String descripcion, String tipoEvento, Integer edadRecomendada, String fechaEvento, Double precio, String actividades, String ubicacion, String georeferencia, String categoria, Integer capacidad, String comida, String estado) {
         this.id = id;
@@ -71,7 +76,13 @@ public class Evento {
         this.capacidad = capacidad;
         this.comida = comida;
         this.estado = estado;
-        this.fechaEvento= fechaEvento;
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+
+        try {
+            this.fechaEvento= formatter.parse(fechaEvento);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -191,10 +202,12 @@ public class Evento {
     }
 
     public  String getFechaEvento() {
-        return fechaEvento;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        String strDate = dateFormat.format(fechaEvento);
+        return strDate;
     }
 
-    public void setFechaEvento(Integer fechaEvento) {
+    public void setFechaEvento(Date fechaEvento) {
         this.fechaEvento = fechaEvento;
     }
 }

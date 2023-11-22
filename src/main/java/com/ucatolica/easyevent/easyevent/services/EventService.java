@@ -75,9 +75,6 @@ public class EventService {
             LocalDateTime fechaActual = LocalDateTime.now();
             LocalDateTime fechaMaximaPermitida = fechaActual.plusMonths(3);
 
-            LocalDateTime fechaActual = LocalDateTime.now();
-            LocalDateTime fechaMaximaPermitida = fechaActual.plusMonths(3);
-
             try {
                 LocalDateTime fechaEventoActualizada = LocalDateTime.parse(eventoActualizado.getFechaEvento()); // Intentar convertir la cadena de fecha
 

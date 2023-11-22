@@ -6,6 +6,7 @@ import com.ucatolica.easyevent.easyevent.model.Proveedor;
 import com.ucatolica.easyevent.easyevent.services.EmailService;
 import com.ucatolica.easyevent.easyevent.services.EventService;
 import com.ucatolica.easyevent.easyevent.services.ProveedorService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import com.ucatolica.easyevent.easyevent.repository.ProveedorRepository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Tag(name="EventController", description = "Esto gestiona las operaciones que se realiza el evento")
 @RestController
 @RequestMapping("/api/evento")
 public class EventController {
