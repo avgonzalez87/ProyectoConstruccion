@@ -28,15 +28,15 @@ public class EventService {
 
     public Evento getEventoById(int id) {
 
-         Optional<Evento> evento = eventoRepository.getEvento(id);
-         if (evento.isPresent()){
-             return evento.get();
-         }else{
-             return null;
-         }
+        Optional<Evento> evento = eventoRepository.getEvento(id);
+        if (evento.isPresent()){
+            return evento.get();
+        }else{
+            return null;
+        }
     }
 
-    public ResponseEntity<Evento> saveEvento(Evento evento) {
+    public void saveEvento(Evento evento) {
         if (evento.getNombreEvento() == null || evento.getNombreEvento().isEmpty() ||
                 evento.getDescripcion() == null || evento.getDescripcion().isEmpty() ||
                 evento.getUbicacion() == null || evento.getUbicacion().isEmpty()) {
@@ -51,12 +51,10 @@ public class EventService {
             if (evento.getCapacidad() < 0) {
                 evento.setCapacidad(0);
             }
-            Evento savedEvento = eventoRepository.save(evento);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedEvento);
+            eventoRepository.save(evento);
         }catch(Exception exception){
             throw new RuntimeException("Error :" + exception.getMessage());
         }
-
     }
 
     public ResponseEntity<String> deleteEvento(int eventoId){

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +22,10 @@ import java.util.List;
 import java.util.Optional;
 @Tag(name = "EventController", description = "Gestiona las operaciones relacionadas con eventos")
 @RestController
-
 @RequestMapping("/api/evento")
 public class EventController {
     @Autowired
     private EventService eventService;
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private ProveedorService proveedorService;
 
     @Operation(summary = "Obtener todos los eventos", description = "Devuelve una lista de todos los eventos")
 
@@ -58,26 +54,18 @@ public class EventController {
 
     @Operation(summary = "Crear un nuevo evento", description = "Crea y guarda un nuevo evento")
     @ApiResponse(responseCode = "201", description = "Evento creado exitosamente")
-    @ApiResponse(responseCode = "400", description = "Error interno")
+    @ApiResponse(responseCode = "500", description = "Error interno")
     @ApiResponse(responseCode = "403", description = "Acceso prohibido")
     @PostMapping("/eventos/save")
-    public ResponseEntity<String> crearEvento(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Evento a ser creado",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = Evento.class))
-            )
-            @RequestBody Evento evento) {
+    public ResponseEntity<String> crearEvento(@Valid
+                                              @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                                      description = "Evento a ser creado",
+                                                      required = true,
+                                                      content = @Content(schema = @Schema(implementation = Evento.class))
+                                              )
+                                              @RequestBody Evento evento) {
         try {
-            ResponseEntity<Evento> eventoGuardado = eventService.saveEvento(evento);
-            Optional<Proveedor> optionalProveedor= proveedorService.getProveedorById(evento.getIdproveedor());
-
-            if (optionalProveedor.isPresent()){
-                Proveedor proveedor = optionalProveedor.get();
-                emailService.sendEmail(proveedor.getCorreo(),"Guardado exitoso","Hola "+proveedor.getNombreempresa()+"; Tu evento " +evento.getNombreEvento()+" ha sido guardado con exito");}
-            else{
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
+            eventService.saveEvento(evento);
             return ResponseEntity.status(HttpStatus.CREATED).body("Evento creado");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -109,7 +97,7 @@ public class EventController {
     public void deleteEvento(
             @Parameter(description = "id evento", required = true)
             @PathVariable Integer evento
-        ) {
+    ) {
         eventService.deleteEvento(evento);
     }
 }

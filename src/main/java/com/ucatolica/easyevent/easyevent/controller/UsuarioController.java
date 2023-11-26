@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Tag(name = "UsuarioController", description = "Gestiona las operaciones relacionadas con usuarios")
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 

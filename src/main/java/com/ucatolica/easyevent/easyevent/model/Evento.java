@@ -1,4 +1,5 @@
 package com.ucatolica.easyevent.easyevent.model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 
@@ -6,6 +7,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Locale;
 
@@ -58,9 +61,9 @@ public class Evento {
     private String estado;
 
 
-    @Column(name = "fechaEvento", length = Integer.MAX_VALUE)
+    @Column(name = "fecha_Evento", length = Integer.MAX_VALUE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date fechaEvento;
-
     public Evento(Integer id, Integer idproveedor, String nombreEvento, String descripcion, String tipoEvento, Integer edadRecomendada, Double precio, String actividades, String ubicacion, String georeferencia, String categoria, Integer capacidad, String comida, String estado) {
         this.id = id;
         this.idproveedor = idproveedor;
@@ -76,10 +79,15 @@ public class Evento {
         this.capacidad = capacidad;
         this.comida = comida;
         this.estado = estado;
-        this.fechaEvento = new Date();
+        LocalDate localDate = LocalDate.of(2023, 11, 1);
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        this.fechaEvento = date;
     }
 
     public Evento() {
+        LocalDate localDate = LocalDate.of(2023, 11, 1);
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        this.fechaEvento = date;
     }
 
     public Integer getId() {
