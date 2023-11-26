@@ -195,4 +195,5 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body("Token invalido.");
         }
     }
+
 }
