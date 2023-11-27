@@ -64,8 +64,7 @@ public class UsuarioController {
             rol = Role.ADMIN;
         }else if(((String) usuarioData.get("rol")).equals("OPERATIVO")){
             rol = Role.OPERATIVO;
-        }else if(((String) usuarioData.get("rol")).equals("AUDITOR")){
-            rol = Role.AUDITOR;
+
         }else {
             rol = Role.OPERATIVO;
         }

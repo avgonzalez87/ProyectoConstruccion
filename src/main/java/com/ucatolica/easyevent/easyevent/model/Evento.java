@@ -1,11 +1,11 @@
 package com.ucatolica.easyevent.easyevent.model;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.TimeZone;
 
 
 @Entity
@@ -58,7 +58,9 @@ public class Evento {
 
 
     @Column(name = "fecha_evento")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaEvento;
+
     public Evento(Integer idproveedor, String nombreEvento, String descripcion, String tipoEvento, Integer edadRecomendada, Double precio, String actividades, String ubicacion, String georeferencia, String categoria, Integer capacidad, String comida, String estado, Date fechaEvento) {
         this.idproveedor = idproveedor;
         this.nombreEvento = nombreEvento;
@@ -192,12 +194,19 @@ public class Evento {
         this.estado = estado;
     }
 
-    public  String getFechaEvento() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        String strDate = dateFormat.format(fechaEvento);
-        return strDate;
+    public String getFechaEvento() {
+        // Formatear la fecha para mostrarla en el formato deseado
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.format(fechaEvento);
+    }
+    public Date getFecha(){
+        return fechaEvento;
     }
     public void setFechaEvento(Date fechaEvento) {
-        this.fechaEvento = fechaEvento;
+        // Convertir la fecha a UTC antes de almacenarla
+        Instant instant = fechaEvento.toInstant();
+        this.fechaEvento = Date.from(instant.atZone(ZoneId.of("UTC")).toInstant());
     }
+
 }

@@ -49,9 +49,15 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    @PutMapping("/update/{eventoId}")
-    public ResponseEntity<String> actualizarEvento(@PathVariable int eventoId, @RequestBody Evento eventoActualizado) {
-        return eventService.updateEvento(eventoId, eventoActualizado);
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<String> actualizarEvento(@PathVariable Integer id, @RequestBody Evento evento) {
+        try {
+            eventService.actualizarEvento(id, evento);
+            return ResponseEntity.ok("Evento actualizado con éxito");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al actualizar el evento: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/eventos/delete")
