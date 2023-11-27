@@ -30,25 +30,28 @@ public class EventService {
         return eventoRepository.getEvento(id);
     }
 
-    public ResponseEntity<Evento> saveEvento(Evento evento) {
-        if (evento.getNombreEvento() == null || evento.getNombreEvento().isEmpty() ||
-                evento.getDescripcion() == null || evento.getDescripcion().isEmpty() ||
-                evento.getUbicacion() == null || evento.getUbicacion().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    public void saveEvento(Evento evento) {
+        try {
+            if (evento.getNombreEvento() == null || evento.getNombreEvento().isEmpty() ||
+                    evento.getDescripcion() == null || evento.getDescripcion().isEmpty() ||
+                    evento.getUbicacion() == null || evento.getUbicacion().isEmpty()) {
+                throw new RuntimeException("Campos incompletos");
+            }
+            if (evento.getPrecio() < 0) {
+                evento.setPrecio(0.00);
+            }
+            if (evento.getCapacidad() < 0) {
+                evento.setCapacidad(0);
+            }
+
+            eventoRepository.save(evento);
+
+        } catch (Exception e){
+            throw new RuntimeException("Error: "+e.getMessage());
+
+
         }
 
-
-
-        if (evento.getPrecio() < 0) {
-            evento.setPrecio(0.00);
-        }
-
-        if (evento.getCapacidad() < 0) {
-            evento.setCapacidad(0);
-        }
-
-        Evento savedEvento = eventoRepository.save(evento);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedEvento);
 
     }
 

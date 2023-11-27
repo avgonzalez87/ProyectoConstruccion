@@ -58,7 +58,6 @@ public class UsuarioController {
         String passwd = (String) usuarioData.get("passwd");
         int cedula = (int) usuarioData.get("cedula");
         String nombre = (String) usuarioData.get("nombre");
-        boolean cambiarClave = (boolean) usuarioData.get("cambiarClave");
         Date fechaUltimoCambioClave = new Date();
         Role rol;
         if(((String) usuarioData.get("rol")).equals("ADMIN")){
@@ -98,7 +97,6 @@ public class UsuarioController {
                     .nombre(nombre)
                     .estado("Preregistro")
                     .intentosFallidos(0)
-                    .cambiarClave(cambiarClave)
                     .fechaUltimoCambioClave(fechaUltimoCambioClave)
                     .token(token)
                     .rol(rol)

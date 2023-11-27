@@ -43,15 +43,7 @@ public class EventController {
     @PostMapping("/eventos/save")
     public ResponseEntity<String> crearEvento( @RequestBody Evento evento) {
         try {
-            ResponseEntity<Evento> eventoGuardado = eventService.saveEvento(evento);
-            Optional<Proveedor> optionalProveedor= proveedorService.getProveedorById(evento.getIdproveedor());
-
-            if (optionalProveedor.isPresent()){
-                Proveedor proveedor = optionalProveedor.get();
-                emailService.sendEmail(proveedor.getCorreo(),"Guardado exitoso","Hola "+proveedor.getNombreempresa()+"; Tu evento " +evento.getNombreEvento()+" ha sido guardado con exito");}
-            else{
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
+            eventService.saveEvento(evento);
             return ResponseEntity.status(HttpStatus.CREATED).body("Evento creado");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

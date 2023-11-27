@@ -63,7 +63,6 @@ public class UsuarioService implements UserDetails{
         usuarioDAO.setCorreo(usuario.getCorreo());
         usuarioDAO.setCedula(usuario.getCedula());
         usuarioDAO.setEstado(usuario.getEstado());
-        usuarioDAO.setCambiarClave(usuario.isCambiarClave());
         usuarioDAO.setFechaUltimoCambioClave(usuario.getFechaUltimoCambioClave());
         return usuarioDAO;
     }

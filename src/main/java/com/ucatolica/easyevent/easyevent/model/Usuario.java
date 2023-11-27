@@ -58,15 +58,18 @@ public class Usuario implements UserDetails {
     private Role rol;
 
     public Usuario() {
+        this.cambiarClave = false;
+        this.fechaUltimoCambioClave = new Date();
+        this.intentosFallidos = 0;
     }
 
-    public Usuario(String correo, String passwd, Integer cedula, String nombre, boolean cambiarClave, Date fechaUltimoCambioClave, Integer token, Role rol) {
+    public Usuario(String correo, String passwd, Integer cedula, String nombre, Date fechaUltimoCambioClave, Integer token, Role rol) {
         this.correo = correo;
         this.passwd = passwd;
         this.cedula = cedula;
         this.nombre = nombre;
         this.estado = "Preregistro";
-        this.cambiarClave = cambiarClave;
+        this.cambiarClave = false;
         this.fechaUltimoCambioClave = fechaUltimoCambioClave;
         this.token = token;
         this.intentosFallidos = 0;

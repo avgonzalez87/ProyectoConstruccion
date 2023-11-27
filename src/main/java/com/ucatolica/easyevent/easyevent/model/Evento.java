@@ -1,13 +1,12 @@
 package com.ucatolica.easyevent.easyevent.model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
-
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.Locale;
+
 
 @Entity
 @Table(name = "eventos")
@@ -58,10 +57,10 @@ public class Evento {
     private String estado;
 
 
-    @Column(name = "fechaEvento", length = Integer.MAX_VALUE)
-    private Date fechaEvento;
+    @Column(name = "fecha_Evento" )
 
-    public Evento(Integer id, Integer idproveedor, String nombreEvento, String descripcion, String tipoEvento, Integer edadRecomendada, String fechaEvento, Double precio, String actividades, String ubicacion, String georeferencia, String categoria, Integer capacidad, String comida, String estado) {
+    private Date fechaEvento;
+    public Evento(Integer id, Integer idproveedor, String nombreEvento, String descripcion, String tipoEvento, Integer edadRecomendada, Double precio, String actividades, String ubicacion, String georeferencia, String categoria, Integer capacidad, String comida, String estado) {
         this.id = id;
         this.idproveedor = idproveedor;
         this.nombreEvento = nombreEvento;
@@ -76,17 +75,15 @@ public class Evento {
         this.capacidad = capacidad;
         this.comida = comida;
         this.estado = estado;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-
-        try {
-            this.fechaEvento= formatter.parse(fechaEvento);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
+        LocalDate localDate = LocalDate.of(2023, 11, 1);
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        this.fechaEvento = date;
     }
 
     public Evento() {
+        LocalDate localDate = LocalDate.of(2023, 11, 1);
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        this.fechaEvento = date;
     }
 
     public Integer getId() {
