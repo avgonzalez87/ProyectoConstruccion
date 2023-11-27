@@ -4,8 +4,13 @@ import com.ucatolica.easyevent.easyevent.repository.EventoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +28,11 @@ public class EventService {
     }
 
     public List<Evento> getAllEvents() {
-        return eventoRepository.getAll();
+        return eventoRepository.findAll();
     }
 
     public Optional<Evento> getEventoById(int id) {
-        return eventoRepository.getEvento(id);
+        return eventoRepository.findById(id);
     }
 
     public void saveEvento(Evento evento) {
@@ -37,6 +42,12 @@ public class EventService {
                     evento.getUbicacion() == null || evento.getUbicacion().isEmpty()) {
                 throw new RuntimeException("Campos incompletos");
             }
+
+            LocalDateTime fechaActual = LocalDateTime.parse(evento.getFechaEvento());
+            LocalDateTime fechaMaximaPermitida = fechaActual.plusDays(1);
+            Instant instant = fechaMaximaPermitida.atZone(ZoneId.systemDefault()).toInstant();
+            evento.setFechaEvento(Date.from(instant));
+
             if (evento.getPrecio() < 0) {
                 evento.setPrecio(0.00);
             }
@@ -59,7 +70,7 @@ public class EventService {
         eventoRepository.delete(evento);
     }
     public ResponseEntity<String> updateEvento(int eventoId, Evento eventoActualizado) {
-        Optional<Evento> optionalEvento = eventoRepository.getEvento(eventoId);
+        Optional<Evento> optionalEvento = eventoRepository.findById(eventoId);
 
         if (optionalEvento.isPresent()) {
             Evento eventoExistente = optionalEvento.get();

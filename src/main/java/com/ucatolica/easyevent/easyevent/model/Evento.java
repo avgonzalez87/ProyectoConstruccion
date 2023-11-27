@@ -57,11 +57,9 @@ public class Evento {
     private String estado;
 
 
-    @Column(name = "fecha_Evento" )
-
+    @Column(name = "fecha_evento")
     private Date fechaEvento;
-    public Evento(Integer id, Integer idproveedor, String nombreEvento, String descripcion, String tipoEvento, Integer edadRecomendada, Double precio, String actividades, String ubicacion, String georeferencia, String categoria, Integer capacidad, String comida, String estado) {
-        this.id = id;
+    public Evento(Integer idproveedor, String nombreEvento, String descripcion, String tipoEvento, Integer edadRecomendada, Double precio, String actividades, String ubicacion, String georeferencia, String categoria, Integer capacidad, String comida, String estado, Date fechaEvento) {
         this.idproveedor = idproveedor;
         this.nombreEvento = nombreEvento;
         this.descripcion = descripcion;
@@ -75,15 +73,11 @@ public class Evento {
         this.capacidad = capacidad;
         this.comida = comida;
         this.estado = estado;
-        LocalDate localDate = LocalDate.of(2023, 11, 1);
-        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        this.fechaEvento = date;
+        this.fechaEvento = fechaEvento;
     }
 
     public Evento() {
-        LocalDate localDate = LocalDate.of(2023, 11, 1);
-        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        this.fechaEvento = date;
+
     }
 
     public Integer getId() {
@@ -203,7 +197,6 @@ public class Evento {
         String strDate = dateFormat.format(fechaEvento);
         return strDate;
     }
-
     public void setFechaEvento(Date fechaEvento) {
         this.fechaEvento = fechaEvento;
     }
