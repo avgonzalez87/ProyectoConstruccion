@@ -24,24 +24,25 @@ public class EventController {
     private EventService eventService;
     @Autowired
     private EmailService emailService;
+    int contadorEventos = 0;
     @Autowired
     private ProveedorService proveedorService;
     @Autowired
     private ProveedorRepository proveedorRepository;
 
     @GetMapping("/eventos")
-    public List<Evento> getAll(){
+    public List<Evento> getAll() {
 
         return eventService.getAllEvents();
     }
 
     @GetMapping("/eventos/{id}")
-    public Optional<Evento> getEvento(@PathVariable int id){
+    public Optional<Evento> getEvento(@PathVariable int id) {
         return eventService.getEventoById(id);
     }
 
     @PostMapping("/eventos/save")
-    public ResponseEntity<String> crearEvento( @RequestBody Evento evento) {
+    public ResponseEntity<String> crearEvento(@RequestBody Evento evento) {
         try {
             eventService.saveEvento(evento);
             return ResponseEntity.status(HttpStatus.CREATED).body("Evento creado");
@@ -52,16 +53,26 @@ public class EventController {
 
     @PostMapping("/update/{id}")
     public ResponseEntity<String> actualizarEvento(@PathVariable Integer id, @RequestBody Evento evento) {
+        contadorEventos++;
+        if (contadorEventos == 2) {
+            emailService.sendEmail("raranda@ucatolica.edu.co","Peticion esta siento realizada más de dos veces","La peticion se hizo mas de dos veces");
+            contadorEventos = 0;
+            return new ResponseEntity<>("se envio más de dos veces", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         try {
             eventService.actualizarEvento(id, evento);
             return ResponseEntity.ok("Evento actualizado con éxito");
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al actualizar el evento: " + e.getMessage());
         }
+
     }
 
     @DeleteMapping("/eventos/delete")
-    public void deleteEvento(@RequestBody Evento evento){
+    public void deleteEvento(@RequestBody Evento evento) {
         eventService.deleteEvento(evento);
     }
+
+
 }
