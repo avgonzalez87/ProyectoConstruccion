@@ -80,6 +80,9 @@ public class UsuarioService implements UserDetails{
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getCorreo(), request.getPasswd()));
         UserDetails user=usuarioRepository.findByCorreo(request.getCorreo()).orElseThrow();
         String token=jwtService.getToken(user);
+        if (!user.isEnabled()) {
+            throw new RuntimeException("El usuario está inactivo. Confirme su registro antes de iniciar sesión.");
+        }
         return AuthResponse.builder()
                 .token(token)
                 .build();
@@ -189,6 +192,7 @@ public class UsuarioService implements UserDetails{
         if (!nuevaContrasenia.matches(".*[!@#$%^&()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) {
             return "La contraseña debe tener al menos un símbolo.";
         }
+
         return "ok";
     }
 
