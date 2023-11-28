@@ -1,11 +1,7 @@
 package com.ucatolica.easyevent.easyevent.controller;
 
 import com.ucatolica.easyevent.easyevent.model.Evento;
-
-import com.ucatolica.easyevent.easyevent.model.Proveedor;
-import com.ucatolica.easyevent.easyevent.services.EmailService;
 import com.ucatolica.easyevent.easyevent.services.EventService;
-import com.ucatolica.easyevent.easyevent.services.ProveedorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 @Tag(name = "EventController", description = "Gestiona las operaciones relacionadas con eventos")
 @RestController
 @RequestMapping("/api/evento")
@@ -28,7 +24,6 @@ public class EventController {
     private EventService eventService;
 
     @Operation(summary = "Obtener todos los eventos", description = "Devuelve una lista de todos los eventos")
-
     @GetMapping("/eventos")
     public ResponseEntity<List<Evento>> getAll(){
         return ResponseEntity.status(HttpStatus.CREATED).body(eventService.getAllEvents());
@@ -39,18 +34,16 @@ public class EventController {
     @ApiResponse(responseCode = "403", description = "Acceso prohibido")
     @GetMapping("/eventos/list/{id}")
     public ResponseEntity<Evento> getEvento(
-            @Parameter(description = "id evento", required = true)
+            @Parameter(description = "ID del evento a recuperar", required = true)
             @PathVariable int id
     ){
         Evento evento = eventService.getEventoById(id);
-        if(evento!=null){
+        if(evento != null){
             return ResponseEntity.status(HttpStatus.CREATED).body(evento);
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
-
 
     @Operation(summary = "Crear un nuevo evento", description = "Crea y guarda un nuevo evento")
     @ApiResponse(responseCode = "201", description = "Evento creado exitosamente")
@@ -71,6 +64,7 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
     @Operation(summary = "Actualizar un evento por ID", description = "Actualiza un evento existente")
     @ApiResponse(responseCode = "200", description = "Evento actualizado exitosamente")
     @ApiResponse(responseCode = "400", description = "Error interno")
@@ -79,11 +73,7 @@ public class EventController {
     public ResponseEntity<String> actualizarEvento(
             @Parameter(description = "ID del evento a ser actualizado", required = true)
             @PathVariable int eventoId,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Evento actualizado",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = Evento.class))
-            )
+            @Parameter(description = "Evento actualizado", required = true)
             @RequestBody Evento eventoActualizado) {
 
         return eventService.updateEvento(eventoId, eventoActualizado);
@@ -95,9 +85,9 @@ public class EventController {
     @ApiResponse(responseCode = "403", description = "Acceso prohibido")
     @DeleteMapping("/eventos/delete/{eventoId}")
     public void deleteEvento(
-            @Parameter(description = "id evento", required = true)
-            @PathVariable Integer evento
+            @Parameter(description = "ID del evento a ser eliminado", required = true)
+            @PathVariable Integer eventoId
     ) {
-        eventService.deleteEvento(evento);
+        eventService.deleteEvento(eventoId);
     }
 }
